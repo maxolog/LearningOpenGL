@@ -361,3 +361,31 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ----------------------------------
+# Linux / C++ Specific Additions
+# ----------------------------------
+
+# Core dumps (Created by Linux when a C++ program crashes/segfaults)
+core
+core.*
+vgcore.*
+
+# Temporary swap files (Created if you ever open files with Vim, Nano, or Gedit)
+*~
+*.swp
+*.swo
+
+# Memory profiling (Created if you ever use Valgrind to check for memory leaks)
+callgrind.out.*
+massif.out.*
+
+# Linux directory files
+.directory
+
+
+# CMake build directories and cache
+build/
+build-*/
+CMakeCache.txt
+CMakeFiles/
