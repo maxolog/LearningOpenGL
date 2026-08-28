@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/maxolog/LearningOpenGL/LearningOpenGL/build/cmake_install.cmake",
+		"/home/maxolog/LearningOpenGL/LearningOpenGL/build/glfw-3.4/cmake_install.cmake",
+		"/home/maxolog/LearningOpenGL/LearningOpenGL/build/glfw-3.4/src/cmake_install.cmake",
+		"/home/maxolog/LearningOpenGL/LearningOpenGL/build/glfw-3.4/docs/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
