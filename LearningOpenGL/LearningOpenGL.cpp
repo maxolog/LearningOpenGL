@@ -171,6 +171,7 @@ int main()
 
 
     glDeleteShader(vertexShader);
+    glDeleteShader(vertexShader2);
     glDeleteShader(fragmentShader);
     glDeleteShader(fragmentShaderDiffColor);
 
