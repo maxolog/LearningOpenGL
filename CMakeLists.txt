@@ -25,7 +25,9 @@ add_executable(LearningOpenGL
 target_include_directories(LearningOpenGL PRIVATE
     glad/include
     glfw-3.4/include
+    shaderClass/include
 )
+
 
 target_link_libraries(LearningOpenGL
     glad

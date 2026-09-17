@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <shader_s.h>
+
 #include <iostream>
 
 
@@ -15,41 +17,6 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-
-const char *vertexShaderSource2 = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;\n"
-    "out vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos, 1.0);\n"
-    "   ourColor = aColor;\n"
-    "}\0";
-
-
-const char* vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos, 1.0);\n"
-    "}\0";
-
-
-const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "in vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(ourColor, 1.0f);\n"
-    "}\n\0";
-
-const char *fragmentShaderSource2 = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = ourColor;\n"
-    "}\n\0";
 
 
 int main()
@@ -90,94 +57,6 @@ int main()
     }
 
 
-    // build and compile our shader program
-    // ------------------------------------
-    // error info
-    // 
-    int success;
-    char infoLog[512];
-    // vertex shader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    // check for shader compile errors
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    // vertex shader2
-    unsigned int vertexShader2 = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader2, 1, &vertexShaderSource2, NULL);
-    glCompileShader(vertexShader2);
-    // check for shader compile errors
-    glGetShaderiv(vertexShader2, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader2, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    //fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    //check for errros
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-
-    //fragment shader different color
-    unsigned int fragmentShaderDiffColor = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShaderDiffColor, 1, &fragmentShaderSource2, NULL);
-    glCompileShader(fragmentShaderDiffColor);
-    //check for errros
-    glGetShaderiv(fragmentShaderDiffColor, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragmentShaderDiffColor, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    //linking the shders
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader2);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    //check for erros
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-        
-    }
-
-    //linking the shders
-    unsigned int shaderProgramDiffColor = glCreateProgram();
-    glAttachShader(shaderProgramDiffColor, vertexShader);
-    glAttachShader(shaderProgramDiffColor, fragmentShaderDiffColor);
-    glLinkProgram(shaderProgramDiffColor);
-    //check for erros
-    glGetProgramiv(shaderProgramDiffColor, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgramDiffColor, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-
-    }
-
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(vertexShader2);
-    glDeleteShader(fragmentShader);
-    glDeleteShader(fragmentShaderDiffColor);
-
-
-
-
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     //float vertices[] = {
@@ -186,6 +65,13 @@ int main()
     //    -0.5f, -0.5f, 0.0f,  // bottom left
     //    -0.5f,  0.5f, 0.0f  // top left 
     //};
+
+
+    // build and compile shader program using the shader class 
+    //----------------------------------------------------------
+    Shader changingColorTriangle("shaders/3.3.shaderSource2.vs", "shaders/3.3.fragmentSource1.fs");
+    // creating shader program for the second triangle using shader class
+    Shader rgbTriangle("shaders/3.3.shaderSource1.vs", "shaders/3.3.fragmentSource2.fs");
 
     float vertTriangle1[] = {
         // first triangle
@@ -297,17 +183,21 @@ int main()
         
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        //glUseProgram(shaderProgram);
+        changingColorTriangle.use();
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
-        glUseProgram(shaderProgramDiffColor);
+
+
+        //glUseProgram(shaderProgramDiffColor);
+        rgbTriangle.use();
 
         float timeValue = glfwGetTime();
         float greenValue = sin(timeValue) / 2.0f + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shaderProgramDiffColor, "ourColor");
+        int vertexColorLocation = glGetUniformLocation(rgbTriangle.ID, "ourColor");
         glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 

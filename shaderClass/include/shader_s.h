@@ -43,7 +43,7 @@ public:
 		}
 		catch (std::ifstream::failure& e)
 		{
-			stdd::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " 
+			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " 
 				<< e.what() 
 				<< std::endl;
 		}
