@@ -69,22 +69,22 @@ int main()
 
     // build and compile shader program using the shader class 
     //----------------------------------------------------------
-    Shader changingColorTriangle("shaders/3.3.shaderSource2.vs", "shaders/3.3.fragmentSource1.fs");
+    Shader changingColorTriangle("shaders/3.3.shaderSourceChangingColorTrig.vs", "shaders/3.3.fragmentSourceChangingColorTrig.fs");
     // creating shader program for the second triangle using shader class
-    Shader rgbTriangle("shaders/3.3.shaderSource1.vs", "shaders/3.3.fragmentSource2.fs");
+    Shader rgbTriangle("shaders/3.3.shaderSourceRGBTrig.vs", "shaders/3.3.fragmentSourceRGBTrig.fs");
 
-    float vertTriangle1[] = {
+    float vertRGBTriangle[] = {
         // first triangle
          0.0f,  -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bott left
          0.25f, 0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  // top
          0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // bott right
     };
-    unsigned int indTriangle1[] = {  // note that we start from 0!
+    unsigned int indRGBTriangle[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };
 
-    float vertTriangle2[] = {
+    float vertColorChangeTriangle[] = {
      // second triangle pos 
         -0.5f, 0.0f, 0.0f, //bott left
         0.0, 0.5f, 0.0f,   // top
@@ -93,21 +93,21 @@ int main()
 
 
 
-    unsigned int VBO, VAO, EBO;
-    unsigned int triangleVBO, triangleVAO, triangleEBO;
+    unsigned int RGBTrigVBO, RGBTrigVAO, RGBTrigEBO;
+    unsigned int ColorChangeTriangleVBO, ColorChangeTriangleVAO, ColorChangeTriangleEBO;
 
     // creating VAO VBO EBO for trinagle1
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    glGenVertexArrays(1, &RGBTrigVAO);
+    glGenBuffers(1, &RGBTrigVBO);
+    glGenBuffers(1, &RGBTrigEBO);
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
+    glBindVertexArray(RGBTrigVAO);
     
-    glBindBuffer(GL_ARRAY_BUFFER, VBO); 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertTriangle1), vertTriangle1, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, RGBTrigVBO); 
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertRGBTriangle), vertRGBTriangle, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indTriangle1), indTriangle1, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, RGBTrigEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indRGBTriangle), indRGBTriangle, GL_STATIC_DRAW);
 
 
     //poss attrib
@@ -128,16 +128,16 @@ int main()
     
 
     //creating VAO VBO EBO for trinagle2
-    glGenVertexArrays(1, &triangleVAO);
-    glGenBuffers(1, &triangleVBO);
-    glGenBuffers(1, &triangleEBO);
+    glGenVertexArrays(1, &ColorChangeTriangleVAO);
+    glGenBuffers(1, &ColorChangeTriangleVBO);
+    glGenBuffers(1, &ColorChangeTriangleEBO);
 
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(triangleVAO);
+    glBindVertexArray(ColorChangeTriangleVAO);
 
     //setting up VBO 
-    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertTriangle2), vertTriangle2, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, ColorChangeTriangleVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertColorChangeTriangle), vertColorChangeTriangle, GL_STATIC_DRAW);
 
     //setting up EBO
     //glBindBuffer(GL_ARRAY_BUFFER, EBO);
@@ -157,8 +157,8 @@ int main()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    // toogle to switch barckground light
-    //bool toggle = false;
+    //toogle to switch barckground light
+    // bool toggle = false;
 
     // render loop
     // -----------
@@ -171,37 +171,41 @@ int main()
         //rendering commands
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-        //renderinf two sreen color based on a flag toggle
-        //if (toggle) {
+        // //renderinf two sreen color based on a flag toggle
+        // if (toggle) {
         //    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
         //    toggle = false;
-        //}
-        //else {
+        // }
+        // else {
         //    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         //    toggle = true;
-        //}
+        // }
         
         glClear(GL_COLOR_BUFFER_BIT);
 
         //glUseProgram(shaderProgram);
-        changingColorTriangle.use();
-        glBindVertexArray(VAO);
+        rgbTriangle.use();
+        glBindVertexArray(RGBTrigVAO);
+
+
         glDrawArrays(GL_TRIANGLES, 0, 3);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
 
 
-        //glUseProgram(shaderProgramDiffColor);
-        rgbTriangle.use();
+        changingColorTriangle.use();
 
         float timeValue = glfwGetTime();
         float greenValue = sin(timeValue) / 2.0f + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(rgbTriangle.ID, "ourColor");
+        int vertexColorLocation = glGetUniformLocation(changingColorTriangle.ID, "ourColor");
         glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
+        float offset = -0.5f;
+        changingColorTriangle.setFloat("xOffset", offset);
 
-        glBindVertexArray(triangleVAO);
+
+        glBindVertexArray(ColorChangeTriangleVAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
