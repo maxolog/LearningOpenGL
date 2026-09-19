@@ -5,6 +5,9 @@
 
 #include <shader_s.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include <iostream>
 
 
@@ -75,9 +78,9 @@ int main()
 
     float vertRGBTriangle[] = {
         // first triangle
-         0.0f,  -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bott left
-         0.25f, 0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  // top
-         0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // bott right
+         0.0f,  -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.9f, 1.2f,  // bott left
+         0.25f, 0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  0.9f, 0.2f,  // top
+         0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  -0.1f, 0.2f  // bott right
     };
     unsigned int indRGBTriangle[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
@@ -111,11 +114,14 @@ int main()
 
 
     //poss attrib
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    //texture coord attribuite
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -153,6 +159,36 @@ int main()
     glBindVertexArray(0);
 
 
+
+    //load and create a texture
+    //----------------------------------------
+    unsigned int seriiTexture;
+    glGenTextures(1, &seriiTexture);
+    glBindTexture(GL_TEXTURE_2D, seriiTexture);
+
+    //set the texture wrapping/filtering options on the current bound texture obj
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("textures/fnaf.jpeg", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else 
+    {
+        std::cout << "FAILED TO LOAD TEXTURE" << std::endl;
+    }
+
+    //freeing texture data
+    stbi_image_free(data);
+
+
+
+
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -185,6 +221,8 @@ int main()
 
         //glUseProgram(shaderProgram);
         rgbTriangle.use();
+
+        glBindTexture(GL_TEXTURE_2D, seriiTexture);
         glBindVertexArray(RGBTrigVAO);
 
 
