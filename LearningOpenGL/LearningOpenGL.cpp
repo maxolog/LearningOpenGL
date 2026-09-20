@@ -77,11 +77,14 @@ int main()
     Shader rgbTriangle("shaders/3.3.shaderSourceRGBTrig.vs", "shaders/3.3.fragmentSourceRGBTrig.fs");
 
     float vertRGBTriangle[] = {
-        // first triangle
-         0.0f,  -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.9f, 1.2f,  // bott left
-         0.25f, 0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  0.9f, 0.2f,  // top
-         0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,  -0.1f, 0.2f  // bott right
-    };
+    // positions          // colors           // texture coords
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,   // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f   // top left 
+};
+
+
     unsigned int indRGBTriangle[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
@@ -167,8 +170,11 @@ int main()
     glBindTexture(GL_TEXTURE_2D, seriiTexture);
 
     //set the texture wrapping/filtering options on the current bound texture obj
+
+    // set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load and generate the texture
@@ -185,6 +191,45 @@ int main()
 
     //freeing texture data
     stbi_image_free(data);
+
+
+    //load and create the second texture
+    //--------------------------------------
+    unsigned int likeFace;
+    glGenTextures(1, &likeFace);
+    glBindTexture(GL_TEXTURE_2D, likeFace);
+
+    //set the texture wrapping/filtering options on the current bound texture obj
+
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // load and generate the texture
+    int width1, height1, nrChannels1;
+    unsigned char *likeFaceData = stbi_load("textures/likeFace.png", &width1, &height1, &nrChannels1, 4);
+    if (likeFace)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width1, height1, 0, GL_RGBA, GL_UNSIGNED_BYTE, likeFaceData);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else
+    {
+        std::cout << "FAILED TO LOAD TEXTURES!" << std::endl;
+    }
+
+    //freeing texture data
+    stbi_image_free(likeFaceData);
+
+   // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+    // -------------------------------------------------------------------------------------------
+    rgbTriangle.use(); // don't forget to activate/use the shader before setting uniforms!
+    // either set it manually like so:
+    glUniform1i(glGetUniformLocation(rgbTriangle.ID, "seriiTexture"), 0);
+    // or set it via the texture class
+    rgbTriangle.setInt("likeFace", 1);
 
 
 
@@ -219,15 +264,20 @@ int main()
         
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //glUseProgram(shaderProgram);
-        rgbTriangle.use();
 
+        // bind textures on corresponding texture units
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, seriiTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, likeFace);
+
+
+        //glUseProgram(rgbTriangle);
+        rgbTriangle.use();
         glBindVertexArray(RGBTrigVAO);
 
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
 
