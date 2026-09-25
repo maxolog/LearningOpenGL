@@ -3,6 +3,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <shader_s.h>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -241,6 +245,13 @@ int main()
     //toogle to switch barckground light
     // bool toggle = false;
 
+        //create a transformation
+        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+        vec = trans * vec;
+
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -271,9 +282,20 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, likeFace);
 
+        //create a transformation
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::rotate(trans, -(float)glfwGetTime() ,glm::vec3(0.0, 0.0, 1.0));
+        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+
 
         //glUseProgram(rgbTriangle);
         rgbTriangle.use();
+
+        //find the location of the uniform coresponding for the transformation
+        unsigned int transformLoc = glGetUniformLocation(rgbTriangle.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+
         glBindVertexArray(RGBTrigVAO);
 
         //glDrawArrays(GL_TRIANGLES, 0, 3);

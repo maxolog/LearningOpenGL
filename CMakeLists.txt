@@ -27,6 +27,7 @@ target_include_directories(LearningOpenGL PRIVATE
     glfw-3.4/include
     shaderClass/include
     imageLoader/include
+    glm
 )
 
 
