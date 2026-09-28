@@ -13,5 +13,5 @@ void main()
    FragColor = mix(
       texture(seriiTexture, TexCoord), 
       texture(likeFace, TexCoord), 
-      0.2);
+      0.5);
 }

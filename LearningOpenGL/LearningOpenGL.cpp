@@ -73,6 +73,10 @@ int main()
     //    -0.5f,  0.5f, 0.0f  // top left 
     //};
 
+    // configure global opengl state
+    // -----------------------------
+    glEnable(GL_DEPTH_TEST);
+
 
     // build and compile shader program using the shader class 
     //----------------------------------------------------------
@@ -80,14 +84,70 @@ int main()
     // creating shader program for the second triangle using shader class
     Shader rgbTriangle("shaders/3.3.shaderSourceRGBTrig.vs", "shaders/3.3.fragmentSourceRGBTrig.fs");
 
-    float vertRGBTriangle[] = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,   // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f   // top left 
-};
+//     float vertRGBTriangle[] = {
+//     // positions          // colors           // texture coords
+//      0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,   // top right
+//      0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,   // bottom right
+//     -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,   // bottom left
+//     -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f   // top left 
+// };
 
+    float vertRGBTriangle[] = {
+
+    // Back face
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+
+     0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+
+    // Front face
+    -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+
+    // Left face
+    -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+
+    -0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+
+    // Right face
+     0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+
+     0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+
+    // Bottom face
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+
+     0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+
+    // Top face
+    -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f
+    };
 
     unsigned int indRGBTriangle[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
@@ -183,7 +243,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load and generate the texture
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("textures/fnaf.jpeg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("textures/wood.jpeg", &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -214,7 +274,7 @@ int main()
 
     // load and generate the texture
     int width1, height1, nrChannels1;
-    unsigned char *likeFaceData = stbi_load("textures/likeFace.png", &width1, &height1, &nrChannels1, 4);
+    unsigned char *likeFaceData = stbi_load("textures/milan.jpeg", &width1, &height1, &nrChannels1, 4);
     if (likeFace)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width1, height1, 0, GL_RGBA, GL_UNSIGNED_BYTE, likeFaceData);
@@ -245,11 +305,11 @@ int main()
     //toogle to switch barckground light
     // bool toggle = false;
 
-        //create a transformation
-        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-        vec = trans * vec;
+        // //create a transformation
+        // glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+        // glm::mat4 trans = glm::mat4(1.0f);
+        // trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+        // vec = trans * vec;
 
 
     // render loop
@@ -260,8 +320,10 @@ int main()
         // -----
         processInput(window);
 
+
         //rendering commands
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // //renderinf two sreen color based on a flag toggle
         // if (toggle) {
@@ -282,24 +344,45 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, likeFace);
 
-        //create a transformation
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::rotate(trans, -(float)glfwGetTime() ,glm::vec3(0.0, 0.0, 1.0));
-        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
+        // //create a transformation
+        float timeV = glfwGetTime();
+        float changeV = (timeV) / 2.0f + 0.5f;
+        float changeV2 = sin(timeV) / 2.0f + 0.5f;
+        // glm::mat4 trans = glm::mat4(1.0f);
+        // trans = glm::rotate(trans, -(float)glfwGetTime() ,glm::vec3(0.0, 0.0, 1.0));
+        // trans = glm::scale(trans, glm::vec3(changeV * 10, changeV * 5, 0.5));
 
         //glUseProgram(rgbTriangle);
         rgbTriangle.use();
 
-        //find the location of the uniform coresponding for the transformation
-        unsigned int transformLoc = glGetUniformLocation(rgbTriangle.ID, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+                //rotating and setting the model using a matrix for it
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(changeV, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(changeV2, 1.0f, 1.0f));
+
+        //useing a matrix to set up the view camera
+        glm::mat4 view = glm::mat4(1.0f);
+        // note that we're translating the scene in the reverse direction of where we want to move
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+        //define is the projection matrix
+        glm::mat4 projection = glm::mat4(1.0f);
+        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+        rgbTriangle.setMat4("model", model);
+        rgbTriangle.setMat4("view", view);
+        rgbTriangle.setMat4("projection", projection);
+
+        // //find the location of the uniform coresponding for the transformation
+        // unsigned int transformLoc = glGetUniformLocation(rgbTriangle.ID, "transform");
+        // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 
         glBindVertexArray(RGBTrigVAO);
 
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
 
