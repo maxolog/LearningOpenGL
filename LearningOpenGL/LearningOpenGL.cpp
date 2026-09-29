@@ -149,6 +149,19 @@ int main()
     -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f
     };
 
+    glm::vec3 cubePositions[] = {
+    glm::vec3( 0.0f,  0.0f,  0.0f), 
+    glm::vec3( 2.0f,  5.0f, -15.0f), 
+    glm::vec3(-1.5f, -2.2f, -2.5f),  
+    glm::vec3(-3.8f, -2.0f, -12.3f),  
+    glm::vec3( 2.4f, -0.4f, -3.5f),  
+    glm::vec3(-1.7f,  3.0f, -7.5f),  
+    glm::vec3( 1.3f, -2.0f, -2.5f),  
+    glm::vec3( 1.5f,  2.0f, -2.5f), 
+    glm::vec3( 1.5f,  0.2f, -1.5f), 
+    glm::vec3(-1.3f,  1.0f, -1.5f)  
+};
+
     unsigned int indRGBTriangle[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
@@ -274,7 +287,7 @@ int main()
 
     // load and generate the texture
     int width1, height1, nrChannels1;
-    unsigned char *likeFaceData = stbi_load("textures/milan.jpeg", &width1, &height1, &nrChannels1, 4);
+    unsigned char *likeFaceData = stbi_load("textures/LockIn.jpg", &width1, &height1, &nrChannels1, 4);
     if (likeFace)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width1, height1, 0, GL_RGBA, GL_UNSIGNED_BYTE, likeFaceData);
@@ -356,11 +369,6 @@ int main()
         //glUseProgram(rgbTriangle);
         rgbTriangle.use();
 
-                //rotating and setting the model using a matrix for it
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(changeV, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(changeV2, 1.0f, 1.0f));
-
         //useing a matrix to set up the view camera
         glm::mat4 view = glm::mat4(1.0f);
         // note that we're translating the scene in the reverse direction of where we want to move
@@ -368,9 +376,9 @@ int main()
 
         //define is the projection matrix
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.01f, 100.0f);
 
-        rgbTriangle.setMat4("model", model);
+        // rgbTriangle.setMat4("model", model);
         rgbTriangle.setMat4("view", view);
         rgbTriangle.setMat4("projection", projection);
 
@@ -380,8 +388,19 @@ int main()
 
 
         glBindVertexArray(RGBTrigVAO);
+        for (unsigned int i = 0; i < 10; i++) {
+                            //rotating and setting the model using a matrix for it
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(changeV, 0.0f, 0.0f));
+            model = glm::scale(model, glm::vec3(changeV2, 1.0f, 1.0f));
+            rgbTriangle.setMat4("model", model);
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
+        
         // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
