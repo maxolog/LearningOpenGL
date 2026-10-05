@@ -369,23 +369,33 @@ int main()
         //glUseProgram(rgbTriangle);
         rgbTriangle.use();
 
-        //useing a matrix to set up the view camera
-        glm::mat4 view = glm::mat4(1.0f);
+
+
         // note that we're translating the scene in the reverse direction of where we want to move
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
         //define is the projection matrix
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.01f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.01f, 100.0f);
 
         // rgbTriangle.setMat4("model", model);
-        rgbTriangle.setMat4("view", view);
+        // rgbTriangle.setMat4("view", view);
         rgbTriangle.setMat4("projection", projection);
 
         // //find the location of the uniform coresponding for the transformation
         // unsigned int transformLoc = glGetUniformLocation(rgbTriangle.ID, "transform");
         // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
+        // camera/view transformation
+        //useing a matrix to set up the view camera
+        glm::mat4 view = glm::mat4(1.0f);
+        float radius = 10.0f;
+        float camX = static_cast<float>(sin(glfwGetTime()) * radius);
+        float camZ = static_cast<float>(cos(glfwGetTime()) * radius);
+        view = glm::lookAt(glm::vec3(camX, camX, camZ), 
+                            glm::vec3(0.0f, 0.0f, 0.0f),    
+                            glm::vec3(0.0f, 1.0f, 0.0f));
+        rgbTriangle.setMat4("view", view);
 
         glBindVertexArray(RGBTrigVAO);
         for (unsigned int i = 0; i < 10; i++) {
