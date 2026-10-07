@@ -490,7 +490,17 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed = static_cast<float>(5.0f * deltaTime);
+
+    // float cameraSpeed = static_cast<float>(5.0f * deltaTime);
+    float cameraSpeed;
+
+    //sprint feature when pressing leftshift camera speed increases by 10.0f
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+        cameraSpeed = static_cast<float>(15.0f * deltaTime);
+    } else {
+        cameraSpeed = static_cast<float>(5.0f * deltaTime);
+    }
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
