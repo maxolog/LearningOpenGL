@@ -36,6 +36,9 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
+// lighting
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 
 int main()
 {
@@ -99,6 +102,8 @@ int main()
     Shader changingColorTriangle("shaders/3.3.shaderSourceChangingColorTrig.vs", "shaders/3.3.fragmentSourceChangingColorTrig.fs");
     // creating shader program for the second triangle using shader class
     Shader rgbTriangle("shaders/3.3.shaderSourceRGBTrig.vs", "shaders/3.3.fragmentSourceRGBTrig.fs");
+    //craeting shder program for the light source using the shader class
+    Shader lightSource("shaders/3.3.shaderSourceLightSource.vs", "shaders/3.3.fragmentSourceLightSource.fs");
 
 //     float vertRGBTriangle[] = {
 //     // positions          // colors           // texture coords
@@ -180,7 +185,43 @@ int main()
 
     glm::vec3 trigPosition = glm::vec3(2.0f, 1.0f, -3.0f);
 
+    //     float vertLightSource[] = {
 
+    // // Back face
+    // -0.5f, -0.5f, -0.5f,   0.5f,  0.5f, -0.5f,
+    //  0.5f, -0.5f, -0.5f,  -0.5f,  0.5f, -0.5f,
+    //  0.5f,  0.5f, -0.5f,  -0.5f, -0.5f, -0.5f, 
+  
+    // // Front face
+    // -0.5f, -0.5f,  0.5f,    0.5f,  0.5f,  0.5f, 
+    //  0.5f, -0.5f,  0.5f,   -0.5f,  0.5f,  0.5f, 
+    //  0.5f,  0.5f,  0.5f,   -0.5f, -0.5f,  0.5f,
+
+
+    // // Left face
+    // -0.5f,  0.5f,  0.5f,   -0.5f, -0.5f, -0.5f,
+    // -0.5f,  0.5f, -0.5f,   -0.5f, -0.5f,  0.5f,
+    // -0.5f, -0.5f, -0.5f,   -0.5f,  0.5f,  0.5f, 
+  
+
+    // // Right face
+    //  0.5f,  0.5f,  0.5f,   0.5f, -0.5f, -0.5f, 
+    //  0.5f,  0.5f, -0.5f,   0.5f, -0.5f,  0.5f,
+    //  0.5f, -0.5f, -0.5f,   0.5f,  0.5f,  0.5f,
+
+
+    // // Bottom face
+    // -0.5f, -0.5f, -0.5f,   0.5f, -0.5f,  0.5f,
+    //  0.5f, -0.5f,  0.5f,  -0.5f, -0.5f,  0.5f,
+    //  0.5f,  0.5f,  0.5f,  -0.5f, -0.5f, -0.5f,
+
+
+    // // Top face
+    // -0.5f,  0.5f, -0.5f,   0.5f,  0.5f,  0.5f, 
+    //  0.5f,  0.5f, -0.5f,  -0.5f,  0.5f,  0.5f,
+    //  0.5f,  0.5f,  0.5f,  -0.5f,  0.5f, -0.5f, 
+ 
+    // };
 
     unsigned int indRGBTriangle[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
@@ -193,6 +234,7 @@ int main()
         0.0, 0.5f, 0.0f,   // top
         0.0, 0.0, 0.0,     // bott right
     };
+
 
 
 
@@ -230,6 +272,22 @@ int main()
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
+
+
+
+    //creatinf a VAO for the light source cube
+    //----------------
+    unsigned int LightSourceVAO;
+    glGenVertexArrays(1, &LightSourceVAO);
+
+    //bind the vertex array first tthen bind and set vertex buffers(s) and after configure vertex attrb
+    glBindVertexArray(LightSourceVAO);
+
+    // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
+    glBindBuffer(GL_ARRAY_BUFFER, RGBTrigVBO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 
     
 
@@ -307,7 +365,7 @@ int main()
 
     // load and generate the texture
     int width1, height1, nrChannels1;
-    unsigned char *likeFaceData = stbi_load("textures/LockIn.jpg", &width1, &height1, &nrChannels1, 4);
+    unsigned char *likeFaceData = stbi_load("textures/octo.jpg", &width1, &height1, &nrChannels1, 4);
     if (likeFace)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width1, height1, 0, GL_RGBA, GL_UNSIGNED_BYTE, likeFaceData);
@@ -320,13 +378,16 @@ int main()
     //freeing texture data
     stbi_image_free(likeFaceData);
 
-   // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     rgbTriangle.use(); // don't forget to activate/use the shader before setting uniforms!
     // either set it manually like so:
     glUniform1i(glGetUniformLocation(rgbTriangle.ID, "seriiTexture"), 0);
     // or set it via the texture class
     rgbTriangle.setInt("likeFace", 1);
+
+
+
 
 
 
@@ -363,7 +424,8 @@ int main()
 
 
         //rendering commands
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        // glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // //renderinf two sreen color based on a flag toggle
@@ -411,6 +473,8 @@ int main()
         glm::mat4 view = glm::mat4(1.0f);
         view = camera.GetViewMatrix();
 
+
+
         //glUseProgram(rgbTriangle);
         rgbTriangle.use();
 
@@ -429,7 +493,7 @@ int main()
             model = glm::scale(model, glm::vec3(changeV2, 1.0f, 1.0f));
             rgbTriangle.setMat4("model", model);
 
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+           glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
         
@@ -463,6 +527,32 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
+
+
+        lightSource.use();
+
+        //setup the shader unifrom attrb for obj color and light color
+        //lightSource.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        lightSource.setVec3("lightColor",  1.0f, 1.0f, 1.0f); 
+
+
+        //settigg the uniform for a view
+        lightSource.setMat4("view", view);
+        //setting the uniform for the projection
+        lightSource.setMat4("projection", projection);
+
+        //setting the model for the light source
+        glm::mat4 lightSourceModel = glm::mat4(1.0f);
+        lightSourceModel = glm::translate(lightSourceModel, lightPos);
+        lightSourceModel = glm::scale(lightSourceModel, glm::vec3(0.2f));
+        lightSource.setMat4("lightSourceModel", lightSourceModel);
+
+        //draw the cube
+        glBindVertexArray(LightSourceVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glBindVertexArray(0);
+
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
@@ -488,10 +578,6 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-
-
-    // float cameraSpeed = static_cast<float>(5.0f * deltaTime);
-    float fastCamera = 15.0f;
 
     //sprint feature when pressing leftshift camera speed increases by 10.0f
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
