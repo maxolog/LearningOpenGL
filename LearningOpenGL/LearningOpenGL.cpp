@@ -37,7 +37,7 @@ float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 // lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(1.8f, 2.0f, .0f);
 
 
 int main()
@@ -516,9 +516,18 @@ int main()
         //setting the uniform for the projection
         lightSource.setMat4("projection", projection);
 
+        float time = glfwGetTime();
+        float radius = 2.0f;
+
+        glm::vec3 movingLightPos(
+            cos(time) * radius,  // X position
+            cos(time) * radius * 1.5,                // Keep height fixed
+            sin(time) * radius   // Z position
+        );
+        
         //setting the model for the light source
         glm::mat4 lightSourceModel = glm::mat4(1.0f);
-        lightSourceModel = glm::translate(lightSourceModel, lightPos);
+        lightSourceModel = glm::translate(lightSourceModel, movingLightPos);
         lightSourceModel = glm::scale(lightSourceModel, glm::vec3(0.2f));
         lightSource.setMat4("lightSourceModel", lightSourceModel);
 
@@ -534,7 +543,7 @@ int main()
         //setup the shader unifrom attrb for obj color and light color
         testCubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         testCubeShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f); 
-        testCubeShader.setVec3("lightPos", lightPos);
+        testCubeShader.setVec3("lightPos", movingLightPos);
 
         //settigg the uniform for a view
         testCubeShader.setMat4("view", view);
@@ -544,7 +553,7 @@ int main()
         //setting the model for the light source
         glm::mat4 testCubeModel = glm::mat4(1.0f);
         testCubeModel = glm::translate(testCubeModel, testCubePos);
-        testCubeModel = glm::scale(testCubeModel, glm::vec3(0.3f));
+        testCubeModel = glm::scale(testCubeModel, glm::vec3(0.5f));
         testCubeShader.setMat4("testCubeModel", testCubeModel);
 
 
