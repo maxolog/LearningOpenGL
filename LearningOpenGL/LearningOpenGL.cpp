@@ -104,6 +104,8 @@ int main()
     Shader rgbTriangle("shaders/3.3.shaderSourceRGBTrig.vs", "shaders/3.3.fragmentSourceRGBTrig.fs");
     //craeting shder program for the light source using the shader class
     Shader lightSource("shaders/3.3.shaderSourceLightSource.vs", "shaders/3.3.fragmentSourceLightSource.fs");
+    //creating shader program for the test cube to test light on 
+    Shader testCubeShader("shaders/3.3.shaderSourceTestCube.vs", "shaders/3.3.fragmentSourceTestCube.fs");
 
 //     float vertRGBTriangle[] = {
 //     // positions          // colors           // texture coords
@@ -115,59 +117,59 @@ int main()
 
     float vertRGBTriangle[] = {
 
-    // Back face
-    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+    // Back face           //color             //uv         //normal position
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
 
-     0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-
+     0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+    -0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+      
     // Front face
-    -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+     0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
 
-     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
 
     // Left face
-    -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
 
-    -0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
 
     // Right face
-     0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,  1.0f,  0.0f,  0.0f,
 
-     0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,  1.0f,  0.0f,  0.0f,
 
     // Bottom face
-    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,  0.0f, -1.0f,  0.0f,
 
-     0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,  0.0f, -1.0f,  0.0f,
 
     // Top face
-    -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
 
-     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
     };
 
     glm::vec3 cubePositions[] = {
@@ -184,44 +186,8 @@ int main()
 };
 
     glm::vec3 trigPosition = glm::vec3(2.0f, 1.0f, -3.0f);
+    glm::vec3 testCubePos = glm::vec3(0.8f, 1.0f, 1.2f);
 
-    //     float vertLightSource[] = {
-
-    // // Back face
-    // -0.5f, -0.5f, -0.5f,   0.5f,  0.5f, -0.5f,
-    //  0.5f, -0.5f, -0.5f,  -0.5f,  0.5f, -0.5f,
-    //  0.5f,  0.5f, -0.5f,  -0.5f, -0.5f, -0.5f, 
-  
-    // // Front face
-    // -0.5f, -0.5f,  0.5f,    0.5f,  0.5f,  0.5f, 
-    //  0.5f, -0.5f,  0.5f,   -0.5f,  0.5f,  0.5f, 
-    //  0.5f,  0.5f,  0.5f,   -0.5f, -0.5f,  0.5f,
-
-
-    // // Left face
-    // -0.5f,  0.5f,  0.5f,   -0.5f, -0.5f, -0.5f,
-    // -0.5f,  0.5f, -0.5f,   -0.5f, -0.5f,  0.5f,
-    // -0.5f, -0.5f, -0.5f,   -0.5f,  0.5f,  0.5f, 
-  
-
-    // // Right face
-    //  0.5f,  0.5f,  0.5f,   0.5f, -0.5f, -0.5f, 
-    //  0.5f,  0.5f, -0.5f,   0.5f, -0.5f,  0.5f,
-    //  0.5f, -0.5f, -0.5f,   0.5f,  0.5f,  0.5f,
-
-
-    // // Bottom face
-    // -0.5f, -0.5f, -0.5f,   0.5f, -0.5f,  0.5f,
-    //  0.5f, -0.5f,  0.5f,  -0.5f, -0.5f,  0.5f,
-    //  0.5f,  0.5f,  0.5f,  -0.5f, -0.5f, -0.5f,
-
-
-    // // Top face
-    // -0.5f,  0.5f, -0.5f,   0.5f,  0.5f,  0.5f, 
-    //  0.5f,  0.5f, -0.5f,  -0.5f,  0.5f,  0.5f,
-    //  0.5f,  0.5f,  0.5f,  -0.5f,  0.5f, -0.5f, 
- 
-    // };
 
     unsigned int indRGBTriangle[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
@@ -256,13 +222,13 @@ int main()
 
 
     //poss attrib
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     //texture coord attribuite
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
 
@@ -286,10 +252,28 @@ int main()
     // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
     glBindBuffer(GL_ARRAY_BUFFER, RGBTrigVBO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    
+
+    //creating a test cube to test the light on
+    //------------------------------------------- 
+    unsigned int TestCubeVAO;
+    glGenVertexArrays(1, &TestCubeVAO);
+
+    //bind the vertex array first thern set vertex data
+    glBindVertexArray(TestCubeVAO);
+    //bind the VBO only no need to fill data as we already have the data from RGBTriangle
+    glBindBuffer(GL_ARRAY_BUFFER, RGBTrigVBO);
+
+    //show how to read the cube position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    //show how to read the cube normal data
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
 
     //creating VAO VBO EBO for trinagle2
     glGenVertexArrays(1, &ColorChangeTriangleVAO);
@@ -428,18 +412,6 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // //renderinf two sreen color based on a flag toggle
-        // if (toggle) {
-        //    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        //    toggle = false;
-        // }
-        // else {
-        //    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-        //    toggle = true;
-        // }
-        
-        glClear(GL_COLOR_BUFFER_BIT);
-
 
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
@@ -474,6 +446,9 @@ int main()
         view = camera.GetViewMatrix();
 
 
+
+        glm::vec3 lightColor(0.0f, 1.0f, 0.0f);
+        glm::vec3 objectColor(1.0f, 0.5f, 0.31f);
 
         //glUseProgram(rgbTriangle);
         rgbTriangle.use();
@@ -528,7 +503,7 @@ int main()
         glBindVertexArray(0);
 
 
-
+        //use the shader program for the light object
         lightSource.use();
 
         //setup the shader unifrom attrb for obj color and light color
@@ -552,6 +527,34 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glBindVertexArray(0);
+
+        // use shader program to render the test cube
+        testCubeShader.use();
+
+        //setup the shader unifrom attrb for obj color and light color
+        testCubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        testCubeShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f); 
+        testCubeShader.setVec3("lightPos", lightPos);
+
+        //settigg the uniform for a view
+        testCubeShader.setMat4("view", view);
+        //setting the uniform for the projection
+        testCubeShader.setMat4("projection", projection);
+
+        //setting the model for the light source
+        glm::mat4 testCubeModel = glm::mat4(1.0f);
+        testCubeModel = glm::translate(testCubeModel, testCubePos);
+        testCubeModel = glm::scale(testCubeModel, glm::vec3(0.3f));
+        testCubeShader.setMat4("testCubeModel", testCubeModel);
+
+
+        //draw the cube
+        glBindVertexArray(TestCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glBindVertexArray(0);
+
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
