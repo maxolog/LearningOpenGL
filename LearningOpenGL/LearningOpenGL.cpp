@@ -37,7 +37,7 @@ float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 // lighting
-glm::vec3 lightPos(1.8f, 2.0f, .0f);
+glm::vec3 lightPos(1.8f, 1.4f, .0f);
 
 
 int main()
@@ -434,7 +434,7 @@ int main()
 
         //define is the projection matrix
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(camera.Zoom), 800.0f / 600.0f, 0.01f, 100.0f);
+        projection = glm::perspective(glm::radians(camera.Zoom), float(SCR_WIDTH) / float(SCR_HEIGHT), 0.01f, 100.0f);
 
         // //find the location of the uniform coresponding for the transformation
         // unsigned int transformLoc = glGetUniformLocation(rgbTriangle.ID, "transform");
@@ -516,7 +516,7 @@ int main()
         //setting the uniform for the projection
         lightSource.setMat4("projection", projection);
 
-        float time = glfwGetTime();
+        float time = glfwGetTime() / 2;
         float radius = 2.0f;
 
         glm::vec3 movingLightPos(
@@ -544,6 +544,7 @@ int main()
         testCubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         testCubeShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f); 
         testCubeShader.setVec3("lightPos", movingLightPos);
+        testCubeShader.setVec3("cameraPos", camera.Position);
 
         //settigg the uniform for a view
         testCubeShader.setMat4("view", view);
